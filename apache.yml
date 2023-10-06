@@ -1,0 +1,33 @@
+---
+- name: installer un serveur web et le configurer
+  hosts: all
+  tasks:
+    - name: installer le serveur apache sur une machine linux
+      ansible.builtin.package:
+        name: httpd
+        state: present
+        use: yum
+      register: apache_installation
+
+    - name: copier un fichier html
+      ansible.builtin.copy:
+         src: /root/website.html
+         dest: /var/www/html
+      register: copie_fichier
+
+    - name: demarrer le service apache
+      ansible.builtin.service:
+         name: httpd
+         state: started
+      register: demarrage_serveur
+
+    - name: capturer le reponse du serveur
+      debug:
+         var: apache_installation
+
+    - name: capturer le reponse du serveur
+      debug:
+         var: copie_fichier
+    - name: capturer le reponse du serveur
+      debug:
+         var: demarrage_serveur
