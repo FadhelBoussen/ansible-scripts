@@ -1,0 +1,38 @@
+
+---
+- hosts: VCENTER
+  gather_facts: false
+  become: false
+  vars:
+    vcenter_hostname: my-vcenter
+    vcenter_username: admin
+    vcenter_password: admin
+    datacneter_name: my-Datacenter
+    guest_name: Win10
+  tasks:
+    - name: Gather all registered virtual machines
+      community.vmware.vmware_vm_info:
+        hostname: '{{ vcenter_hostname }}'
+        username: '{{ vcenter_username }}'
+        password: '{{ vcenter_password }}'
+        validate_certs : "false"
+      delegate_to: localhost
+      register: vminfo
+
+    - debug:
+        msg: "{{ item.guest_name }}, {{ item.ip_address }}"
+      with_items: "{{ vminfo.virtual_machines }}"
+
+    - name: Create a snapshot
+      community.vmware.vmware_guest_snapshot:
+        hostname: "{{ vcenter_hostname }}"
+        username: "{{ vcenter_username }}"
+        password: "{{ vcenter_password }}"
+        datacenter: "{{ datacenter_name }}"
+        folder: "/{{ datacenter_name }}/vm/"
+        name: "{{ guest_name }}"
+        validate_certs : "false"
+        state: present
+        snapshot_name: snap1
+ description: snap1_description
+      delegate_to: localhost
