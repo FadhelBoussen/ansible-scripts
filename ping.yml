@@ -1,0 +1,6 @@
+---
+- name: Playbook de ping
+  hosts: all
+  tasks:
+    - name: Pinger les hôtes
+      ping:
