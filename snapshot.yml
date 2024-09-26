@@ -1,5 +1,5 @@
 ---
-- hosts: VCENTER
+- hosts: ALL
   gather_facts: false
   become: false
   vars:
